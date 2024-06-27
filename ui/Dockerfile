@@ -1,4 +1,14 @@
-FROM registry.access.redhat.com/ubi8/nginx-118
+FROM docker.io/library/node:22 AS build
+
+WORKDIR /ui
+
+COPY . /ui/
+
+RUN npm install && \
+    npm run build && \
+    npm run package
+
+FROM registry.access.redhat.com/ubi8/nginx-118 AS final
 
 USER root
 
@@ -11,7 +21,8 @@ RUN yum install -y nodejs
 # Configure certificate and key
 RUN mkdir -p /etc/pki/nginx/private && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/nginx/private/server.key -out /etc/pki/nginx/server.crt --batch && \
-    chown -R 1001:0 /etc/pki/nginx/ && chmod 755 /etc/pki/nginx/private/server.key /etc/pki/nginx/server.crt
+    chown -R 1001:0 /etc/pki/nginx/ && \
+    chmod 755 /etc/pki/nginx/private/server.key /etc/pki/nginx/server.crt
     
 # Grant write permission to group
 RUN chmod -R g+w /opt/app-root/src /usr/local/bin/
@@ -29,8 +40,11 @@ RUN dos2unix /usr/local/bin/create-config.cjs && \
     dos2unix /usr/local/bin/entrypoint.sh && \
     dos2unix /etc/nginx/nginx.conf
 
+# Make sure entrypoint.sh is executable
+RUN chmod ug+x /usr/local/bin/entrypoint.sh
+
 # Copy dist files
-COPY --chown=1001:0 dist/ .
+COPY --from=build --chown=1001:0 /ui/dist/ .
 
 # Expose port 8080 for http and 1337 for https
 EXPOSE 8080 1337
