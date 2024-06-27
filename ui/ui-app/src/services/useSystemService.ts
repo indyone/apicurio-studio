@@ -10,9 +10,10 @@ const getInfo = async (appConfig: ApicurioStudioConfig, auth: AuthService): Prom
     const token: string | undefined = await auth.getToken();
 
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/system/info");
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpGet<SystemInfo>(endpoint, createOptions(headers));
 };
 
@@ -22,9 +23,10 @@ const getOpenApiVendorExtensions = async (appConfig: ApicurioStudioConfig, auth:
     const token: string | undefined = await auth.getToken();
 
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/system/uiConfig/openapi/vendorExtensions");
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpGet<VendorExtension[]>(endpoint, createOptions(headers));
 };
 

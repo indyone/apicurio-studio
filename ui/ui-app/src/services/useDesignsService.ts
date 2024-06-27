@@ -20,9 +20,10 @@ async function createDesign(appConfig: ApicurioStudioConfig, auth: AuthService, 
     const token: string | undefined = await auth.getToken();
 
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs");
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
 
     return httpPostWithReturn<any, Design>(endpoint, cd, createOptions(headers)).then(response => {
         const cevent: CreateDesignEvent = cde || {
@@ -48,9 +49,10 @@ async function searchDesigns(appConfig: ApicurioStudioConfig, auth: AuthService,
         order: sort.direction,
         orderby: sort.by
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpGet<DesignsSearchResults>(endpoint, createOptions(headers));
 }
 
@@ -62,9 +64,10 @@ async function getDesign(appConfig: ApicurioStudioConfig, auth: AuthService, des
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId", {
         designId
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpGet<Design>(endpoint, createOptions(headers));
 }
 
@@ -75,9 +78,10 @@ async function deleteDesign(appConfig: ApicurioStudioConfig, auth: AuthService, 
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId", {
         designId
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpDelete(endpoint, createOptions(headers));
 }
 
@@ -88,9 +92,10 @@ async function renameDesign(appConfig: ApicurioStudioConfig, auth: AuthService, 
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId", {
         designId: id
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpPut<RenameDesign>(endpoint, {
         name: newName,
         description: newDescription || ""
@@ -105,9 +110,10 @@ async function getDesignContent(appConfig: ApicurioStudioConfig, auth: AuthServi
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId/content", {
         designId
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
 
     const options: any = createOptions(headers);
     options.maxContentLength = "5242880"; // TODO 5MB hard-coded, make this configurable?
@@ -131,9 +137,11 @@ async function updateDesignContent(appConfig: ApicurioStudioConfig, auth: AuthSe
         designId: content.designId
     });
     const headers: any = {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": content.contentType,
     };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpPut<any>(endpoint, content.data, createOptions(headers)).then(response => {
         const cevent: CreateDesignEvent = {
             type: "UPDATE",
@@ -155,9 +163,10 @@ async function getEvents(appConfig: ApicurioStudioConfig, auth: AuthService, des
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId/events", {
         designId
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpGet<DesignEvent[]>(endpoint, createOptions(headers));
 }
 
@@ -168,9 +177,10 @@ async function getFirstEvent(appConfig: ApicurioStudioConfig, auth: AuthService,
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId/events/first", {
         designId
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpGet<DesignEvent>(endpoint, createOptions(headers));
 }
 
@@ -181,9 +191,10 @@ async function createEvent(appConfig: ApicurioStudioConfig, auth: AuthService, d
     const endpoint: string = createEndpoint(appConfig.apis.studio, "/designs/:designId/events", {
         designId
     });
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
+    const headers: any = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
     return httpPostWithReturn<CreateDesignEvent, DesignEvent>(endpoint, cevent, createOptions(headers));
 }
 
